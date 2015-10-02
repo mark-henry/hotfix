@@ -1,17 +1,20 @@
 import os
 
-class Researcher():
+class Research():
     def __init__(self):
         self.file_locations = {}
 
 
-    def fetch_locations(self, servername):
+    def _fetch_locations(self, servername):
         '''Returns dict of file => list of paths, suitable for memoization of locationsfor().'''
         paths_by_file = {}
 
         pathbase = r"\\{}\c$\rsi".format(servername)
         def substitute_base(path):
             return "C:\\RSI" + path[len(pathbase):]
+
+        if not os.path.isdir(pathbase):
+            raise IOError("Server {} does not exist or insufficient permissions".format(servername))
 
         for root, directories, files in os.walk(pathbase):
             for file in files:
@@ -24,6 +27,6 @@ class Researcher():
     def locationsfor(self, filename, servername):
         '''Traverses C:\RSI on server and returns locations of files matching the given filename.'''
         if servername not in self.file_locations:
-            self.file_locations[servername] = self.fetch_locations(servername)
+            self.file_locations[servername] = self._fetch_locations(servername)
 
-        return self.file_locations[servername][filename]
+        return self.file_locations[servername].get(filename, [])
