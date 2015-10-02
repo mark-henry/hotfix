@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<h1>RPE 1.2.3 Hotfix 999</h1>
+		<h3>Issue 12345</h3>
+		<h6>Files included for issue 12345</h6>
+		<ul><li>CHWeb.dll</li></ul>
+		<h6>Summary of issue 12345</h6>
+		<p>fixed a thing</p>
+		<h3>Issue 33321</h3>
+		<h6>Files included for issue 33321</h6>
+		<ul><li>getCustFinTransactionSrch.sql</li><li>CaseBusiness.jar</li><li>deploy_54321.bat</li></ul>
+		<h6>Summary of issue 33321</h6>
+		<p>Optimized somethign probably</p>
+		<p><em>Warning: Back up all files before overwriting or deleting.</em></p>
+		<h2>App Server</h2>
+		<p>Use the deploy.bat</p>
+		<p>Replace CHWeb.dll in the following locations:</p>
+		<ol><li>C:\RSI\Web Services\NetWebServices\bin\CHWeb.dll</li></ol>
+		<p>Restart IIS.</p>
+		<h2>Web Server</h2>
+		<p>Replace CHWeb.dll in the following locations:</p>
+		<ol><li>C:\RSI\Web\bin\CHWeb.dll</li></ol>
+		<p>Restart IIS.</p>
+		<h2>Offline Server</h2>
+		<p>Use the deploy.bat</p>
+		<p>Replace CHWeb.dll in the following locations:</p>
+		<ol><li>C:\RSI\Web Services\NetWebServices\bin\CHWeb.dll</li></ol>
+		<p>Replace CaseBusiness.jar in the following locations:</p>
+		<ol><li>C:\RSI\Offline\CommandLineInterface\lib\CaseBusiness.jar</li></ol>
+		<p>Restart IIS.</p>
+		<h2>Database</h2>
+		<p>Have a database administrator run the following scripts.</p>
+		<ol><li>getCustFinTransactionSrch.sql</li></ol>
+		<p><em>Pulled from build RPE-3.5.2.25-HF5-121</em></p>
+	</form>
+</body>
+</html>

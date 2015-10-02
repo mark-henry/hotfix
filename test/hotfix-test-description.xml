@@ -1,0 +1,16 @@
+<hotfix>
+	<title>RPE 1.2.3 Hotfix 999</title>
+	<build>RPE-3.5.2.25-HF5-121</build>
+	<buildfolder>\\mh-desktop\hotfixbuilds\RPE-3.5.2.25-HF5-121</buildfolder>
+	<issue number="12345">
+		<file>chweb.dll</file>
+		<description>fixed a thing</description>
+	</issue>
+	<issue number="33321">
+		<file>getCustFinTransactionSrch.sql</file>
+		<file>CaseBusiness.jar</file>
+		<file>deploy_54321.bat</file>
+		<description>Optimized somethign probably</description>
+		<special sections="web,offline">Use the deploy.bat</special>
+	</issue>
+</hotfix>
