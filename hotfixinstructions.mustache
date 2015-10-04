@@ -8,7 +8,7 @@
 * {{{.}}}
 {{else}}
 This issue is already resolved and there are no deployables.
-{{/files}}
+{{/file}}
 
 ###### Summary of issue {{number}} ######
 {{{summary}}}
@@ -21,14 +21,14 @@ This issue is already resolved and there are no deployables.
 ## App Server ##
 {{special}}
 
-{{#replacements}}
+{{#replacement}}
 
-Replace {{@key}} in the following locations:
+Replace {{filename}} in the following locations:
 
-{{#this}}
+{{#files}}
 1. {{{.}}}
-{{/this}}
-{{/replacements}}
+{{/files}}
+{{/replacement}}
 
 {{#restartiis}}
 Restart IIS.
@@ -40,14 +40,14 @@ Restart IIS.
 ## Web Server ##
 {{special}}
 
-{{#replacements}}
+{{#replacement}}
 
-Replace {{@key}} in the following locations:
+Replace {{filename}} in the following locations:
 
-{{#this}}
+{{#files}}
 1. {{{.}}}
-{{/this}}
-{{/replacements}}
+{{/files}}
+{{/replacement}}
 
 {{#restartiis}}
 Restart IIS.
@@ -59,14 +59,14 @@ Restart IIS.
 ## Offline Server ##
 {{special}}
 
-{{#replacements}}
+{{#replacement}}
 
-Replace {{@key}} in the following locations:
+Replace {{filename}} in the following locations:
 
-{{#this}}
+{{#files}}
 1. {{{.}}}
-{{/this}}
-{{/replacements}}
+{{/files}}
+{{/replacement}}
 
 {{#restartiis}}
 Restart IIS.
@@ -76,14 +76,14 @@ Restart IIS.
 
 {{#admin}}
 ## Admin Tool ##
-{{#replacements}}
+{{#replacement}}
 
 Replace these files on any machine running the Admin Tool:
 
-{{#this}}
+{{#files}}
 1. {{{.}}}
-{{/this}}
-{{/replacements}}
+{{/files}}
+{{/replacement}}
 {{/admin}}
 
 

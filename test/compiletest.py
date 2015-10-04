@@ -45,8 +45,8 @@ class CompilerTest(unittest.TestCase):
         self.assertEqual(2, len(instructions.findall('.//javascript')))
 
 
-    def test_js_noduplication(self):
-        js_xml = '<hotfix><issue><file>asdf.js</file><file>asdf.JS</file></issue></hotfix>'
+    def test_sql_noduplication(self):
+        js_xml = '<hotfix><issue><file>asdf.sql</file><file>asdf.SQL</file></issue></hotfix>'
         instructions = compile.instructions_from_spec(ElementTree.fromstring(js_xml))
         self.assertEqual(1, len(instructions.findall('.//script')))
 

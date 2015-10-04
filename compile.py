@@ -3,14 +3,14 @@ import re
 from xml.etree import ElementTree as ET
 from research import Research
 
-r = Research()
+research = Research()
 
 
 def instruct_file(filename, instructions, hostname):
     '''Researches file and adds it to the instructions.
     Much decision-making and special-casing is done here.'''
     if re.match('.dll$', filename):
-        locations = r.locationsfor(filename, hostname)
+        locations = research.locationsfor(filename, hostname)
 
 
 def server_dictionary(spec):
@@ -32,22 +32,35 @@ def copy_trivial(spec, instructions):
             instructions.append(element)
 
 
-def handle_file(filename, instructions, servers):
+def handle_file(filename, instructions, serverdict):
     '''Handles the research and insertion of the file into the instructions, as appropriate.
     Much special casing and business logic here.'''
     if re.search('\.js$', filename, re.IGNORECASE):
         instructions.append(ET.Element('javascript'))
-    if re.search('\.sql$', filename, re.IGNORECASE):
+    elif re.search('\.sql$', filename, re.IGNORECASE):
         database = ET.SubElement(instructions, 'database')
-        script = ET.SubElement(database, 'script')
-        script.text = filename
+        if not any(filename.lower() == existing.text.lower() for existing in instructions.findall('.//script')):
+            script = ET.SubElement(database, 'script')
+            script.text = filename
+        return
+    elif re.search('\.xlsx$', filename, re.IGNORECASE):
+        ET.SubElement(instructions, 'businessrules')
+        return
+    elif re.search('\.dll', filename, re.IGNORECASE):
+        ET.SubElement(instructions, 'restartiis')
+    for server, hostname in enumerate(serverdict):
+        paths = research.locationsfor(filename, hostname)
+        if paths:
+            server_section = ET.SubElement(instructions, server)
+            for path in paths:
+                ET.SubElement(server_section, 'replacement')
 
 
 def research_files(spec, instructions):
-    servers = server_dictionary(spec)
+    serverdict = server_dictionary(spec)
     for file_tag in spec.findall('.//file'):
         filename = file_tag.text
-        handle_file(filename, instructions, servers)
+        handle_file(filename, instructions, serverdict)
 
 
 def instructions_from_spec(spec):
