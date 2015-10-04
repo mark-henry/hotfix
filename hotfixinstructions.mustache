@@ -1,0 +1,115 @@
+# {{name}} #
+
+
+{{#issues}}
+### Issue {{number}} ###
+###### Files included for issue {{number}} ######
+{{#file}}
+* {{{.}}}
+{{else}}
+This issue is already resolved and there are no deployables.
+{{/files}}
+
+###### Summary of issue {{number}} ######
+{{{summary}}}
+{{/issues}}
+
+*Warning: Back up all files before overwriting or deleting.*
+
+
+{{#app}}
+## App Server ##
+{{special}}
+
+{{#replacements}}
+
+Replace {{@key}} in the following locations:
+
+{{#this}}
+1. {{{.}}}
+{{/this}}
+{{/replacements}}
+
+{{#restartiis}}
+Restart IIS.
+{{/restartiis}}
+{{/app}}
+
+
+{{#web}}
+## Web Server ##
+{{special}}
+
+{{#replacements}}
+
+Replace {{@key}} in the following locations:
+
+{{#this}}
+1. {{{.}}}
+{{/this}}
+{{/replacements}}
+
+{{#restartiis}}
+Restart IIS.
+{{/restartiis}}
+{{/web}}
+
+
+{{#offline}}
+## Offline Server ##
+{{special}}
+
+{{#replacements}}
+
+Replace {{@key}} in the following locations:
+
+{{#this}}
+1. {{{.}}}
+{{/this}}
+{{/replacements}}
+
+{{#restartiis}}
+Restart IIS.
+{{/restartiis}}
+{{/offline}}
+
+
+{{#admin}}
+## Admin Tool ##
+{{#replacements}}
+
+Replace these files on any machine running the Admin Tool:
+
+{{#this}}
+1. {{{.}}}
+{{/this}}
+{{/replacements}}
+{{/admin}}
+
+
+{{#database}}
+## Database ##
+Have a database administrator run the following scripts.
+
+{{#scripts}}
+1. {{{.}}}
+{{/scripts}}
+{{/database}}
+
+
+{{#javascript}}
+## Client Browsers ##
+Delete all temporary internet files to remove previous JavaScript file from client browser machines.
+
+1. Open Internet Options from within Internet Explorer.
+2. From the General tab, click the Delete... button.
+3. Check only the Temporary Internet Files box and click Delete.
+{{/javascript}}
+
+{{#businessrules}}
+## Business Rules ##
+Review all BR modifications spreadsheet documents and make the changes they describe. Then, rebuild and redeploy the object model and .adb files.
+{{/businessrules}}
+
+
+*Pulled from build {{build}}*

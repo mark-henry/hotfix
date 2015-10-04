@@ -1,0 +1,43 @@
+<instructions>
+	<title>RPE 1.2.3 Hotfix 999</title>
+	<build>RPE-3.5.2.25-HF5-121</build>
+	<issue>
+		<number>12345</number>
+		<file>chweb.dll</file>
+		<summary>fixed a thing</summary>
+	</issue>
+	<issue>
+		<number>33321</number>
+		<file>getCustFinTransactionSrch.sql</file>
+		<file>CaseBusiness.jar</file>
+		<file>deploy_54321.bat</file>
+		<summary>Optimized somethign probably</summary>
+	</issue>
+	<app>
+		<text>Use the deploy.bat</text>
+		<replacement>
+			<file>CHWeb.dll</file>
+			<path>C:\RSI\Web Services\NetWebServices\bin\CHWeb.dll</path>
+		</replacement>
+		<text>Restart IIS.</text>
+	</app>
+	<web>
+		<replacement filename="CHWeb.dll">
+			<path>C:\RSI\Web Services\NetWebServices\bin\CHWeb.dll</path>
+		</replacement>
+		<text>Restart IIS.</text>
+	</web>
+	<offline>
+		<text>Use the deploy.bat</text>
+		<replacement filename="CHWeb.dll">
+			<path>C:\RSI\Web Services\NetWebServices\bin\CHWeb.dll</path>
+		</replacement>
+		<replacement filename="CaseBusiness.jar">
+			<path>C:\RSI\Offline\CommandLineInterface\lib\CaseBusiness.jar</path>
+		</replacement>
+		<text>Restart IIS.</text>
+	</offline>
+	<database>
+		<script>getCustFinTransactionSrch.sql</script>
+	</database>
+</instructions>
