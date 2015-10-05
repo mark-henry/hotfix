@@ -1,18 +1,19 @@
-# {{name}} #
+# {{title}} #
 
 
-{{#issues}}
+{{#issue}}
 ### Issue {{number}} ###
 ###### Files included for issue {{number}} ######
 {{#file}}
 * {{{.}}}
-{{else}}
+{{/file}}
+{{^file}}
 This issue is already resolved and there are no deployables.
 {{/file}}
 
 ###### Summary of issue {{number}} ######
 {{{summary}}}
-{{/issues}}
+{{/issue}}
 
 *Warning: Back up all files before overwriting or deleting.*
 
@@ -25,9 +26,9 @@ This issue is already resolved and there are no deployables.
 
 Replace {{filename}} in the following locations:
 
-{{#files}}
+{{#file}}
 1. {{{.}}}
-{{/files}}
+{{/file}}
 {{/replacement}}
 
 {{#restartiis}}
@@ -44,9 +45,9 @@ Restart IIS.
 
 Replace {{filename}} in the following locations:
 
-{{#files}}
+{{#file}}
 1. {{{.}}}
-{{/files}}
+{{/file}}
 {{/replacement}}
 
 {{#restartiis}}
@@ -63,9 +64,9 @@ Restart IIS.
 
 Replace {{filename}} in the following locations:
 
-{{#files}}
+{{#file}}
 1. {{{.}}}
-{{/files}}
+{{/file}}
 {{/replacement}}
 
 {{#restartiis}}
@@ -80,9 +81,9 @@ Restart IIS.
 
 Replace these files on any machine running the Admin Tool:
 
-{{#files}}
+{{#file}}
 1. {{{.}}}
-{{/files}}
+{{/file}}
 {{/replacement}}
 {{/admin}}
 

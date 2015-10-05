@@ -1,18 +1,24 @@
 import pystache
 import markdown
 import argparse
-from xml.dom import minidom
+import xmltodict
 
 
-def render(instructions):
-    pass
+def render(instructions, template):
+    inst = xmltodict.parse(instructions)['instructions']
+    templated = pystache.render(template, inst)
+    rendered = markdown.markdown(templated)
+    return rendered
 
 
 def main():
     ap = argparse.ArgumentParser("Renders an instructions document to HTML")
     args = ap.parse_args()
 
-    print(render(open(args.instructions)))
+    html = render(
+        open(args.instructions).read(),
+        open(args.template).read())
+    print(html)
 
 
 if __name__ == "__main__":
