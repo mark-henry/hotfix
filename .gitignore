@@ -1,5 +1,6 @@
 .cache/
 __pycache__/
+*.pyc
 
 # JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
 

@@ -1,5 +1,4 @@
-import argparse
-import re
+import re, sys, argparse
 from xml.etree import ElementTree as ET
 from research import Research
 
@@ -36,7 +35,7 @@ def addreplacement(instructions, server, filename, paths):
     if not paths or not filename:
         return
     server_tag = instructions.find(server)
-    if not server_tag:
+    if server_tag is None:
         server_tag = ET.SubElement(instructions, server)
     if not server_tag.find('replacement//filename[text="{}"]'.format(filename)):
         repl_tag = ET.SubElement(server_tag, 'replacement')
@@ -84,12 +83,13 @@ def instructions_from_spec(spec):
 
 
 def main():
-    arg_parser = argparse.ArgumentParser(description='Creates hotfix from specifications.')
+    arg_parser = argparse.ArgumentParser(description='Creates hotfix instructions from given specifications.')
+    arg_parser.add_argument('specfile', help='hotfix specification file')
     args = arg_parser.parse_args()
 
-    specification = ET.parse(args.spec_file).getroot()
+    specification = ET.parse(args.specfile).getroot()
     instructions = instructions_from_spec(specification)
-    print(instructions)
+    print(ET.tostring(instructions, encoding='unicode'))
 
 
 if __name__ == "__main__":

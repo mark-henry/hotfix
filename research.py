@@ -1,4 +1,4 @@
-import os
+import os, sys
 
 class Research():
     def __init__(self):
@@ -27,6 +27,7 @@ class Research():
     def locationsfor(self, filename, servername):
         '''Traverses C:\RSI on server and returns locations of files matching the given filename.'''
         if servername not in self._file_locations:
+            print('Caching research for server {}...'.format(servername), file=sys.stderr)
             self._file_locations[servername] = self._fetch_locations(servername)
 
         return self._file_locations[servername].get(filename.lower(), [])

@@ -12,8 +12,16 @@ def render(instructions, template):
 
 
 def main():
-    ap = argparse.ArgumentParser("Renders an instructions document to HTML")
-    args = ap.parse_args()
+    desc = '''
+    Renders an HTML page from the given template and instructions.
+
+    Template should be a Mustache template that, when rendered with the given
+    template as context, creates a Markdown document.
+    '''
+    arg_parser = argparse.ArgumentParser(description=desc)
+    arg_parser.add_argument('instructions', help='xml instructions file')
+    arg_parser.add_argument('template', default='hotfix.mustache', help='handlebars-in-markdown template file')
+    args = arg_parser.parse_args()
 
     html = render(
         open(args.instructions).read(),
