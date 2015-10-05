@@ -1,0 +1,3 @@
+Following python packages required:
+pip install pystache
+pip install markdown
