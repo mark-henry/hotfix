@@ -3,7 +3,7 @@ import compile
 from xml.etree import ElementTree
 
 
-class CompilerTest(unittest.TestCase):
+class CompileTest(unittest.TestCase):
     def setUp(self):
         self.spec_fixture_1 = r'''
             <hotfix>
@@ -11,8 +11,6 @@ class CompilerTest(unittest.TestCase):
                 <build>RPE-3.5.2.25-HF5-121</build>
                 <buildfolder>\\mh-desktop\hotfixbuilds\RPE-3.5.2.25-HF5-121</buildfolder>
                 <app>10.1.0.181</app>
-                <web>10.1.0.182</web>
-                <offline>10.1.0.183</offline>
                 <issue>
                     <number>12345</number>
                     <file>chweb.dll</file>
@@ -59,7 +57,13 @@ class CompilerTest(unittest.TestCase):
 
 
     def test_smf_handling(self):
-        pass  # TODO
+        dll_xml = '<hotfix><app>10.1.0.181</app><issue><file>RsiFrameworks.Common.dll</file></issue></hotfix>'
+        instructions = compile.instructions_from_spec(ElementTree.fromstring(dll_xml))
+        self.assertIsNotNone(instructions.find('.//restartiis'))
+        self.assertTrue(instructions.findall('.//replacement'))
+        self.assertIsNotNone(instructions.find(r'.//admin'))
+        self.assertIsNotNone(instructions.find(r'.//app/replacement[path="C:\RSI\SMF\RsiFrameworks.Common.dll"]'))
+        self.assertIsNotNone(instructions.find(r'.//admin/replacement[path="C:\RSI\SMF\RsiFrameworks.Common.dll"]'))
 
 
     def test_empty_deployables(self):
@@ -69,11 +73,11 @@ class CompilerTest(unittest.TestCase):
 
 
     def test_dll_handling(self):
-        dll_xml = '<hotfix><issue><file>CHWeb.dll</file></issue></hotfix>'
+        dll_xml = '<hotfix><app>10.1.0.181</app><issue><file>CHWeb.dll</file></issue></hotfix>'
         instructions = compile.instructions_from_spec(ElementTree.fromstring(dll_xml))
-        self.assertNotEqual([], instructions.findall('.//restartiis'))
-        self.assertNotEqual([], instructions.findall('.//replace'))
-        # TODO: assert a file path
+        self.assertIsNotNone(instructions.find('.//restartiis'))
+        self.assertTrue(instructions.findall('.//replacement'))
+        self.assertTrue(instructions.find(r'.//replacement[path="C:\RSI\Web Services\NetWebServices\bin\CHWeb.dll"]'))
 
 
     def test_server_dictionary(self):

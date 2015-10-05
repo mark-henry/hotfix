@@ -32,6 +32,19 @@ def copy_trivial(spec, instructions):
             instructions.append(element)
 
 
+def addreplacement(instructions, server, filename, paths):
+    if not paths or not filename:
+        return
+    server_tag = instructions.find(server)
+    if not server_tag:
+        server_tag = ET.SubElement(instructions, server)
+    if not server_tag.find('replacement//filename[text="{}"]'.format(filename)):
+        repl_tag = ET.SubElement(server_tag, 'replacement')
+        ET.SubElement(repl_tag, 'filename').text = filename
+        for path in paths:
+            ET.SubElement(repl_tag, 'path').text = path
+
+
 def handle_file(filename, instructions, serverdict):
     '''Handles the research and insertion of the file into the instructions, as appropriate.
     Much special casing and business logic here.'''
@@ -48,12 +61,12 @@ def handle_file(filename, instructions, serverdict):
         return
     elif re.search('\.dll', filename, re.IGNORECASE):
         ET.SubElement(instructions, 'restartiis')
-    for server, hostname in enumerate(serverdict):
+    for server, hostname in serverdict.items():
         paths = research.locationsfor(filename, hostname)
-        if paths:
-            server_section = ET.SubElement(instructions, server)
-            for path in paths:
-                ET.SubElement(server_section, 'replacement')
+        addreplacement(instructions, server, filename, paths)
+        SMF_paths = [path for path in paths if re.search(r'\\SMF\\', path, re.IGNORECASE)]
+        if SMF_paths:
+            addreplacement(instructions, 'admin', filename, SMF_paths)
 
 
 def research_files(spec, instructions):
