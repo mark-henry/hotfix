@@ -26,9 +26,9 @@ This issue is already resolved and there are no deployables.
 
 Replace {{filename}} in the following locations:
 
-{{#file}}
+{{#path}}
 1. {{{.}}}
-{{/file}}
+{{/path}}
 {{/replacement}}
 
 {{#restartiis}}
@@ -45,9 +45,9 @@ Restart IIS.
 
 Replace {{filename}} in the following locations:
 
-{{#file}}
+{{#path}}
 1. {{{.}}}
-{{/file}}
+{{/path}}
 {{/replacement}}
 
 {{#restartiis}}
@@ -64,9 +64,9 @@ Restart IIS.
 
 Replace {{filename}} in the following locations:
 
-{{#file}}
+{{#path}}
 1. {{{.}}}
-{{/file}}
+{{/path}}
 {{/replacement}}
 
 {{#restartiis}}
@@ -77,14 +77,16 @@ Restart IIS.
 
 {{#admin}}
 ## Admin Tool ##
+Replace these files on any machine running the Admin Tool:
 {{#replacement}}
 
-Replace these files on any machine running the Admin Tool:
+Replace {{filename}} in the following locations:
 
-{{#file}}
+{{#path}}
 1. {{{.}}}
-{{/file}}
+{{/path}}
 {{/replacement}}
+
 {{/admin}}
 
 
@@ -112,5 +114,6 @@ Delete all temporary internet files to remove previous JavaScript file from clie
 Review all BR modifications spreadsheet documents and make the changes they describe. Then, rebuild and redeploy the object model and .adb files.
 {{/businessrules}}
 
-
-*Pulled from build {{build}}*
+{{#build}}
+*Pulled from build {{.}}*
+{{/build}}

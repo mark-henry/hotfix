@@ -27,7 +27,8 @@ class RenderTest(unittest.TestCase):
                 <issue>
                     <number>1234</number>
                     <file>CHWeb.dll</file>
-                    <summary>Just one file</summary>
+                    <file>ITPCoreBusiness.dll</file>
+                    <summary>a few files</summary>
                 </issue>
             </instructions>
             '''
@@ -43,6 +44,7 @@ class RenderTest(unittest.TestCase):
         self.assertRegex(html, "there are no deployables")
 
 
-    def test_afile(self):
+    def test_withfiles(self):
         html = render.render(self.instructions_fixture_3, self.template)
         self.assertRegex(html, "CHWeb.dll")
+        self.assertRegex(html, "ITPCoreBusiness.dll")
