@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 
 class RenderTest(unittest.TestCase):
     def setUp(self):
-        self.template = open("hotfixinstructions.mustache").read()
+        self.template = open("hotfix.mustache").read()
         self.instructions_fixture_1 = r'''
             <instructions>
                 <title>test title</title>
