@@ -13,7 +13,7 @@ def render(instructions, template):
     <style>body {{ margin: 25px }}</style>
     <title>{0}</title>
     <body>{1}</body>
-    </html>'''.format(inst['title'], rendered)
+    </html>'''.format(inst.get('title', 'Hotfix Instructions'), rendered)
 
 
 def main():

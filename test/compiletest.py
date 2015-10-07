@@ -89,5 +89,6 @@ class CompileTest(unittest.TestCase):
         self.assertEqual('10.1.0.181', server_dict['app'])
 
 
-    def test_compile_spec(self):
-        compile.instructions_from_spec(ElementTree.fromstring(self.spec_fixture_1))
+    def test_sorted(self):
+        # TODO: test that files are sorted
+        pass

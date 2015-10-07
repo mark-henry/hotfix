@@ -1,6 +1,5 @@
 import unittest
 import render
-from xml.etree import ElementTree as ET
 
 
 class RenderTest(unittest.TestCase):
@@ -28,16 +27,19 @@ class RenderTest(unittest.TestCase):
                     <number>1234</number>
                     <file>CHWeb.dll</file>
                     <file>ITPCoreBusiness.dll</file>
+                    <file>BR_mods_doc.xlsx</file>
                     <summary>a few files</summary>
                 </issue>
             </instructions>
             '''
+
 
     def test_basic(self):
         html = render.render(self.instructions_fixture_1, self.template)
         self.assertRegex(html, "test title")
         self.assertRegex(html, "test build")
         self.assertNotRegex(html, "App Server")
+
 
     def test_emptydeployables(self):
         html = render.render(self.instructions_fixture_2, self.template)
@@ -48,3 +50,10 @@ class RenderTest(unittest.TestCase):
         html = render.render(self.instructions_fixture_3, self.template)
         self.assertRegex(html, "CHWeb.dll")
         self.assertRegex(html, "ITPCoreBusiness.dll")
+        self.assertRegex(html, "BR_mods_doc.xlsx")
+
+
+    def test_htmlescapes(self):
+        html = render.render(r"<instructions><issue><file>br_mods_doc</file></issue></instructions>",
+                             self.template)
+        self.assertRegex(html, "br_mods_doc")
