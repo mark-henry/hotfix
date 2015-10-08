@@ -92,3 +92,10 @@ class CompileTest(unittest.TestCase):
     def test_sorted(self):
         # TODO: test that files are sorted
         pass
+
+
+    def test_special_handling(self):
+        spec_xml = '<hotfix><issue><special servers="app,offline">special app stuff</special></issue></hotfix>'
+        instructions = compile.instructions_from_spec(ElementTree.fromstring(spec_xml))
+        self.assertIsNotNone(instructions.find('.//app/special'))
+        self.assertIsNotNone(instructions.find('.//offline/special'))

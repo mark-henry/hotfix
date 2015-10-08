@@ -75,10 +75,27 @@ def research_files(spec, instructions):
         handle_file(filename, instructions, serverdict)
 
 
+def ensure_subelement(element, subtag):
+    result = element.find('./' + subtag)
+    if result is None:
+        result = ET.SubElement(element, subtag)
+    return result
+
+
+def handle_specials(spec, instructions):
+    specials = spec.findall('.//issue/special')
+    for special in specials:
+        servers = special.attrib.get('servers', '').split(',')
+        for server in servers:
+            server_tag = ensure_subelement(instructions, server)
+            ET.SubElement(server_tag, 'special').text = special.text
+
+
 def instructions_from_spec(spec):
     instructions = ET.Element('instructions')
     copy_trivial(spec, instructions)
     research_files(spec, instructions)
+    handle_specials(spec, instructions)
     return instructions
 
 
