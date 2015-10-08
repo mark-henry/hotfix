@@ -31,12 +31,17 @@ def copy_trivial(spec, instructions):
             instructions.append(element)
 
 
+def ensure_subelement(element, subtag):
+    result = element.find('./' + subtag)
+    if result is None:
+        result = ET.SubElement(element, subtag)
+    return result
+
+
 def addreplacement(instructions, server, filename, paths):
     if not paths or not filename:
         return
-    server_tag = instructions.find(server)
-    if server_tag is None:
-        server_tag = ET.SubElement(instructions, server)
+    server_tag = ensure_subelement(instructions, server)
     if not server_tag.find('replacement//filename[text="{}"]'.format(filename)):
         repl_tag = ET.SubElement(server_tag, 'replacement')
         ET.SubElement(repl_tag, 'filename').text = filename
@@ -73,13 +78,6 @@ def research_files(spec, instructions):
     for file_tag in spec.findall('.//file'):
         filename = file_tag.text
         handle_file(filename, instructions, serverdict)
-
-
-def ensure_subelement(element, subtag):
-    result = element.find('./' + subtag)
-    if result is None:
-        result = ET.SubElement(element, subtag)
-    return result
 
 
 def handle_specials(spec, instructions):
