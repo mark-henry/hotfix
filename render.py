@@ -101,9 +101,9 @@ Replace {{filename}} in the following locations:
 ## Database ##
 Have a database administrator run the following scripts.
 
-{{#scripts}}
+{{#script}}
 1. {{{.}}}
-{{/scripts}}
+{{/script}}
 {{/database}}
 
 

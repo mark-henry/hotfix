@@ -50,16 +50,16 @@ class CompileTest(unittest.TestCase):
 
 
     def test_sql_handling(self):
-        js_sql = '<hotfix><issue><file>asdf.sql</file></issue></hotfix>'
+        js_sql = '<hotfix><issue><file>asdf.sql</file><file>another.sql</file></issue></hotfix>'
         instructions = compile.instructions_from_spec(ElementTree.fromstring(js_sql))
-        self.assertNotEqual([], instructions.findall('.//database'))
+        self.assertEqual(1, len(instructions.findall('.//database')))
         self.assertNotEqual([], instructions.findall('.//database/script'))
 
 
     def test_smf_handling(self):
         dll_xml = '<hotfix><app>10.1.0.181</app><issue><file>RsiFrameworks.Common.dll</file></issue></hotfix>'
         instructions = compile.instructions_from_spec(ElementTree.fromstring(dll_xml))
-        self.assertIsNotNone(instructions.find('.//restartiis'))
+        self.assertIsNotNone(instructions.find('.//app/restartiis'))
         self.assertTrue(instructions.findall('.//replacement'))
         self.assertIsNotNone(instructions.find(r'.//admin'))
         self.assertIsNotNone(instructions.find(r'.//app/replacement[path="C:\RSI\SMF\RsiFrameworks.Common.dll"]'))
@@ -95,7 +95,6 @@ class CompileTest(unittest.TestCase):
 
 
     def test_special_handling(self):
-        spec_xml = '<hotfix><issue><special servers="app,offline">special app stuff</special></issue></hotfix>'
+        spec_xml = '<hotfix><appspecial>special app stuff</appspecial></hotfix>'
         instructions = compile.instructions_from_spec(ElementTree.fromstring(spec_xml))
-        self.assertIsNotNone(instructions.find('.//app/special'))
-        self.assertIsNotNone(instructions.find('.//offline/special'))
+        self.assertIsNotNone(instructions.find('.//appspecial'))

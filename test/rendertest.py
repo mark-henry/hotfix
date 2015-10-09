@@ -4,7 +4,8 @@ import render
 
 class RenderTest(unittest.TestCase):
     def setUp(self):
-        self.template = open("hotfix.mustache").read()
+        self.template = render.default_template
+
         self.instructions_fixture_1 = r'''
             <instructions>
                 <title>test title</title>
@@ -41,9 +42,20 @@ class RenderTest(unittest.TestCase):
         self.assertNotRegex(html, "App Server")
 
 
+    def test_sql(self):
+        html = render.render('''<instructions><database><script>asdf.sql</script></database></instructions>''',
+                             self.template)
+        self.assertRegex(html, 'asdf.sql')
+
+
     def test_emptydeployables(self):
         html = render.render(self.instructions_fixture_2, self.template)
         self.assertRegex(html, "there are no deployables")
+
+
+    def test_restartiis(self):
+        html = render.render('''<instructions><app><restartiis>true</restartiis></app></instructions>''', self.template)
+        self.assertRegex(html, 'Restart IIS')
 
 
     def test_withfiles(self):

@@ -26,7 +26,7 @@ def server_dictionary(spec):
 
 def copy_trivial(spec, instructions):
     '''Copies trivial tags which require no processing, such as build, title, and issues.'''
-    for tag in ['build', 'title', 'issue']:
+    for tag in ['build', 'title', 'issue', 'appspecial', 'webspecial', 'offlinespecial']:
         for element in spec.findall(tag):
             instructions.append(element)
 
@@ -55,19 +55,20 @@ def handle_file(filename, instructions, serverdict):
     if re.search('\.js$', filename, re.IGNORECASE):
         instructions.append(ET.Element('javascript'))
     elif re.search('\.sql$', filename, re.IGNORECASE):
-        database = ET.SubElement(instructions, 'database')
+        database = ensure_subelement(instructions, 'database')
         if not any(filename.lower() == existing.text.lower() for existing in instructions.findall('.//script')):
             script = ET.SubElement(database, 'script')
             script.text = filename
         return
     elif re.search('\.xlsx$', filename, re.IGNORECASE):
-        ET.SubElement(instructions, 'businessrules')
+        ensure_subelement(instructions, 'businessrules').text = 'true'
         return
-    elif re.search('\.dll', filename, re.IGNORECASE):
-        ET.SubElement(instructions, 'restartiis')
     for server, hostname in serverdict.items():
         paths = research.locationsfor(filename, hostname)
         addreplacement(instructions, server, filename, paths)
+        if re.search('\.dll', filename, re.IGNORECASE):
+            server_tag = ensure_subelement(instructions, server)
+            ensure_subelement(server_tag, 'restartiis').text = 'true'
         SMF_paths = [path for path in paths if re.search(r'\\SMF\\', path, re.IGNORECASE)]
         if SMF_paths:
             addreplacement(instructions, 'admin', filename, SMF_paths)
@@ -80,20 +81,10 @@ def research_files(spec, instructions):
         handle_file(filename, instructions, serverdict)
 
 
-def handle_specials(spec, instructions):
-    specials = spec.findall('.//issue/special')
-    for special in specials:
-        servers = special.attrib.get('servers', '').split(',')
-        for server in servers:
-            server_tag = ensure_subelement(instructions, server)
-            ET.SubElement(server_tag, 'special').text = special.text
-
-
 def instructions_from_spec(spec):
     instructions = ET.Element('instructions')
     copy_trivial(spec, instructions)
     research_files(spec, instructions)
-    handle_specials(spec, instructions)
     return instructions
 
 
