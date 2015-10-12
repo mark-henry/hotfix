@@ -1,4 +1,5 @@
 import unittest
+import re
 import render
 
 
@@ -69,7 +70,9 @@ class RenderTest(unittest.TestCase):
         html = render.render(r'<instructions><issue><file>br_mods_doc</file></issue></instructions>',
                              self.template)
         self.assertRegex(html, 'br_mods_doc')
-        
+
+
     def test_special(self):
         html = render.render(r'<instructions><app><special>special app</special></app></instructions>', self.template)
         self.assertRegex(html, 'special app')
+

@@ -1,21 +1,16 @@
-import re, sys, argparse
+import re
+import argparse
 from xml.etree import ElementTree as ET
 from research import Research
+
 
 research = Research()
 
 
-def instruct_file(filename, instructions, hostname):
-    '''Researches file and adds it to the instructions.
-    Much decision-making and special-casing is done here.'''
-    if re.match('.dll$', filename):
-        locations = research.locationsfor(filename, hostname)
-
-
-def server_dictionary(spec):
-    '''Returns dictionary of servertype => hostname, like app => 10.1.0.181
+def get_server_dict(spec):
+    """Returns dict of servertype => hostname, like app => 10.1.0.181
     :rtype : dict
-    '''
+    """
     server_dict = {}
     for server_type in ['app', 'web', 'offline']:
         tag = spec.find(server_type)
@@ -25,7 +20,7 @@ def server_dictionary(spec):
 
 
 def copy_trivial(spec, instructions):
-    '''Copies trivial tags which require no processing, such as build, title, and issues.'''
+    """Copies trivial tags which require no processing, such as build, title, and issues."""
     for tag in ['build', 'title', 'issue']:
         for element in spec.findall(tag):
             instructions.append(element)
@@ -50,8 +45,8 @@ def addreplacement(instructions, server, filename, paths):
 
 
 def handle_file(filename, instructions, serverdict):
-    '''Handles the research and insertion of the file into the instructions, as appropriate.
-    Much special casing and business logic here.'''
+    """Handles the research and insertion of the file into the instructions, as appropriate.
+    Much special casing and business logic here."""
     if re.search('\.js$', filename, re.IGNORECASE):
         instructions.append(ET.Element('javascript'))
     elif re.search('\.sql$', filename, re.IGNORECASE):
@@ -69,13 +64,13 @@ def handle_file(filename, instructions, serverdict):
         if re.search('\.dll', filename, re.IGNORECASE):
             server_tag = ensure_subelement(instructions, server)
             ensure_subelement(server_tag, 'restartiis').text = 'true'
-        SMF_paths = [path for path in paths if re.search(r'\\SMF\\', path, re.IGNORECASE)]
-        if SMF_paths:
-            addreplacement(instructions, 'admin', filename, SMF_paths)
+        smf_paths = [path for path in paths if re.search(r'\\SMF\\', path, re.IGNORECASE)]
+        if smf_paths:
+            addreplacement(instructions, 'admin', filename, smf_paths)
 
 
 def research_files(spec, instructions):
-    serverdict = server_dictionary(spec)
+    serverdict = get_server_dict(spec)
     for file_tag in spec.findall('.//file'):
         filename = file_tag.text
         handle_file(filename, instructions, serverdict)

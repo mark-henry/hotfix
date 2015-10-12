@@ -2,6 +2,7 @@ import pystache
 import markdown
 import argparse
 import xmltodict
+from collections import OrderedDict
 
 
 default_template = r'''

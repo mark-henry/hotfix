@@ -82,16 +82,11 @@ class CompileTest(unittest.TestCase):
 
     def test_server_dictionary(self):
         servers_xml = '<hotfix><app>10.1.0.181</app><web>10.1.0.182</web></hotfix>'
-        server_dict = compile.server_dictionary(ElementTree.fromstring(servers_xml))
+        server_dict = compile.get_server_dict(ElementTree.fromstring(servers_xml))
         self.assertIn('app', server_dict)
         self.assertIn('web', server_dict)
         self.assertNotIn('offline', server_dict)
         self.assertEqual('10.1.0.181', server_dict['app'])
-
-
-    def test_sorted(self):
-        # TODO: test that files are sorted
-        pass
 
 
     def test_special_handling(self):
