@@ -1,6 +1,7 @@
 import re
 import argparse
 from xml.etree import ElementTree as ET
+import sys
 from research import Research
 
 
@@ -78,17 +79,32 @@ def research_files(spec, instructions):
 
 def handle_special(spec, instructions):
     for servertype in ['app', 'web', 'offline']:
-        special = spec.find('.//{}special'.format(servertype))
+        special = spec.find('./{}special'.format(servertype))
         if special is not None:
             server_tag = ensure_subelement(instructions, servertype)
             ET.SubElement(server_tag, 'special').text = special.text
 
 
+def sort_scripts(instructions):
+    """Sorts the <database> section by text"""
+    db = instructions.find('./database')
+    if db:
+        db[:] = sorted(db, key=lambda e: e.text)
+
+
+def validate(instructions):
+    for servertype in ['app', 'web', 'offline']:
+        if not instructions.find('./' + servertype):
+            print("Warning: no {} server specified!".format(servertype), file=sys.stderr)
+
+
 def instructions_from_spec(spec):
     instructions = ET.Element('instructions')
+    validate(instructions)
     copy_trivial(spec, instructions)
     research_files(spec, instructions)
     handle_special(spec, instructions)
+    sort_scripts(instructions)
     return instructions
 
 

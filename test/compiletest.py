@@ -93,3 +93,11 @@ class CompileTest(unittest.TestCase):
         spec_xml = '<hotfix><appspecial>special app stuff</appspecial></hotfix>'
         instructions = compile.instructions_from_spec(ElementTree.fromstring(spec_xml))
         self.assertIsNotNone(instructions.find('.//app/special'))
+
+
+    def test_sorted_sql(self):
+        spec_xml = '<hotfix><issue><file>3.sql</file><file>2.sql</file><file>1.sql</file></issue></hotfix>'
+        instructions = compile.instructions_from_spec(ElementTree.fromstring(spec_xml))
+        self.assertEqual(instructions.find('.//database/script[1]').text, '1.sql')
+        self.assertEqual(instructions.find('.//database/script[2]').text, '2.sql')
+        self.assertEqual(instructions.find('.//database/script[3]').text, '3.sql')
