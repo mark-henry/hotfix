@@ -26,7 +26,7 @@ def server_dictionary(spec):
 
 def copy_trivial(spec, instructions):
     '''Copies trivial tags which require no processing, such as build, title, and issues.'''
-    for tag in ['build', 'title', 'issue', 'appspecial', 'webspecial', 'offlinespecial']:
+    for tag in ['build', 'title', 'issue']:
         for element in spec.findall(tag):
             instructions.append(element)
 
@@ -81,10 +81,19 @@ def research_files(spec, instructions):
         handle_file(filename, instructions, serverdict)
 
 
+def handle_special(spec, instructions):
+    for servertype in ['app', 'web', 'offline']:
+        special = spec.find('.//{}special'.format(servertype))
+        if special is not None:
+            server_tag = ensure_subelement(instructions, servertype)
+            ET.SubElement(server_tag, 'special').text = special.text
+
+
 def instructions_from_spec(spec):
     instructions = ET.Element('instructions')
     copy_trivial(spec, instructions)
     research_files(spec, instructions)
+    handle_special(spec, instructions)
     return instructions
 
 

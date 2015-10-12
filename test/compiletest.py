@@ -97,4 +97,4 @@ class CompileTest(unittest.TestCase):
     def test_special_handling(self):
         spec_xml = '<hotfix><appspecial>special app stuff</appspecial></hotfix>'
         instructions = compile.instructions_from_spec(ElementTree.fromstring(spec_xml))
-        self.assertIsNotNone(instructions.find('.//appspecial'))
+        self.assertIsNotNone(instructions.find('.//app/special'))

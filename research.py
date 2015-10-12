@@ -1,8 +1,16 @@
 import os, sys
+import json
+
+
+cache_file = 'researchcache.json'
+
 
 class Research():
     def __init__(self):
         self._file_locations = {}
+        if os.path.exists(cache_file):
+            with open(cache_file, 'r') as infile:
+                self._file_locations = json.loads(infile.read())
 
 
     def _fetch_locations(self, servername):
@@ -29,5 +37,7 @@ class Research():
         if servername not in self._file_locations:
             print('Caching research for server {}...'.format(servername), file=sys.stderr)
             self._file_locations[servername] = self._fetch_locations(servername)
+            with open(cache_file, 'w') as outfile:
+                outfile.write(json.dumps(self._file_locations))
 
         return self._file_locations[servername].get(filename.lower(), [])
