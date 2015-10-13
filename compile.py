@@ -92,15 +92,15 @@ def sort_scripts(instructions):
         db[:] = sorted(db, key=lambda e: e.text)
 
 
-def validate(instructions):
+def validate(spec):
     for servertype in ['app', 'web', 'offline']:
-        if not instructions.find('./' + servertype):
+        if spec.find('.//' + servertype) is None:
             print("Warning: no {} server specified!".format(servertype), file=sys.stderr)
 
 
 def instructions_from_spec(spec):
     instructions = ET.Element('instructions')
-    validate(instructions)
+    validate(spec)
     copy_trivial(spec, instructions)
     research_files(spec, instructions)
     handle_special(spec, instructions)
