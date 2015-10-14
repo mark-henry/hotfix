@@ -26,6 +26,11 @@ class CompileTest(unittest.TestCase):
             </hotfix>'''
 
 
+    def test_basic(self):
+        spec = ElementTree.fromstring(self.spec_fixture_1)
+        compile.instructions_from_spec(spec)
+
+
     def test_copy_trivial(self):
         spec = ElementTree.fromstring(self.spec_fixture_1)
         inst = ElementTree.Element('instructions')

@@ -55,7 +55,7 @@ def removeredundant_caseinsensitive(filenames):
     return result
 
 
-def research_files(filenames, serverdict, instructions):
+def research_files(filenames, servers, instructions):
     """
     Handles the research and insertion of the files into the instructions, as appropriate.
     Much special casing and business logic here.
@@ -72,7 +72,7 @@ def research_files(filenames, serverdict, instructions):
         database = ensure_subelement(instructions, 'database')
         ET.SubElement(database, 'script').text = sql_file
 
-    for server, hostname in serverdict.items():
+    for server, hostname in servers.items():
         for filename in filenames:
             paths = research.locationsfor(filename, hostname)
             addreplacement(instructions, server, filename, paths)
@@ -99,12 +99,29 @@ def sort_scripts(instructions):
 
 
 def validate(spec):
+    def warn(msg):
+        print("Warning: {}!".format(msg), file=sys.stderr)
+        
     for servertype in ['app', 'web', 'offline']:
-        if spec.find('.//' + servertype) is None:
-            print("Warning: no {} server specified!".format(servertype), file=sys.stderr)
-    # TODO: warn if no issues
-    # TODO: warn for issues with no number, no files, or no summary
-    # TODO: warn if no build number, title
+        if spec.find(servertype) is None:
+            warn("no {} server specified".format(servertype))
+    if spec.find('.//build') is None:
+        warn('no build number specified')
+    if spec.find('.//title') is None:
+        warn('no title specified')
+    if spec.find('.//issue') is None:
+        warn('no issues in hotfix')
+    for issue in spec.findall('.//issue') or []:
+        number_tag = issue.find('.//number')
+        issue_num = '<no number>'
+        if number_tag is not None:
+            issue_num = number_tag.text
+        else:
+            warn('no number specified for issue')
+        if issue.find('file') is None:
+            warn('no files specified for issue {}'.format(issue_num))
+        if issue.find('summary') is None:
+            warn('no summary specified for issue {}'.format(issue_num))
 
 
 def allfiles(spec):
