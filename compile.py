@@ -8,7 +8,7 @@ from research import Research
 research = Research()
 
 
-def get_server_dict(spec):
+def serverdict(spec):
     """Returns dict of servertype => hostname, like app => 10.1.0.181
     :rtype : dict
     """
@@ -45,36 +45,42 @@ def addreplacement(instructions, server, filename, paths):
             ET.SubElement(repl_tag, 'path').text = path
 
 
-def handle_file(filename, instructions, serverdict):
-    """Handles the research and insertion of the file into the instructions, as appropriate.
-    Much special casing and business logic here."""
-    if re.search('\.js$', filename, re.IGNORECASE):
-        instructions.append(ET.Element('javascript'))
-    elif re.search('\.sql$', filename, re.IGNORECASE):
-        database = ensure_subelement(instructions, 'database')
-        if not any(filename.lower() == existing.text.lower() for existing in instructions.findall('.//script')):
-            script = ET.SubElement(database, 'script')
-            script.text = filename
-        return
-    elif re.search('\.xlsx$', filename, re.IGNORECASE):
+def removeredundant_caseinsensitive(filenames):
+    """For strings that have case-insentitive duplicates in the given list, filters all but the last occurrence."""
+    lowered = [f.lower() for f in filenames]
+    result = []
+    for index, filename in enumerate(filenames):
+        if filename.lower() not in lowered[index+1:]:
+            result.append(filename)
+    return result
+
+
+def research_files(filenames, serverdict, instructions):
+    """
+    Handles the research and insertion of the files into the instructions, as appropriate.
+    Much special casing and business logic here.
+    """
+    filenames = removeredundant_caseinsensitive(filenames)
+
+    if any(re.search('\.js$', f, re.IGNORECASE) for f in filenames):
+        ensure_subelement(instructions, 'javascript').text = 'true'
+
+    if any(re.search('\.xlsx$', f, re.IGNORECASE) for f in filenames):
         ensure_subelement(instructions, 'businessrules').text = 'true'
-        return
+
+    for sql_file in [f for f in filenames if re.search('\.sql$', f, re.IGNORECASE)]:
+        database = ensure_subelement(instructions, 'database')
+        ET.SubElement(database, 'script').text = sql_file
+
     for server, hostname in serverdict.items():
-        paths = research.locationsfor(filename, hostname)
-        addreplacement(instructions, server, filename, paths)
-        if re.search('\.dll', filename, re.IGNORECASE):
-            server_tag = ensure_subelement(instructions, server)
-            ensure_subelement(server_tag, 'restartiis').text = 'true'
-        smf_paths = [path for path in paths if re.search(r'\\SMF\\', path, re.IGNORECASE)]
-        if smf_paths:
+        for filename in filenames:
+            paths = research.locationsfor(filename, hostname)
+            addreplacement(instructions, server, filename, paths)
+            smf_paths = [path for path in paths if re.search(r'\\SMF\\', path, re.IGNORECASE)]
             addreplacement(instructions, 'admin', filename, smf_paths)
-
-
-def research_files(spec, instructions):
-    serverdict = get_server_dict(spec)
-    for file_tag in spec.findall('.//file'):
-        filename = file_tag.text
-        handle_file(filename, instructions, serverdict)
+            if any(re.search('\.dll$', p, re.IGNORECASE) for p in paths):
+                server_tag = ensure_subelement(instructions, server)
+                ensure_subelement(server_tag, 'restartiis').text = 'true'
 
 
 def handle_special(spec, instructions):
@@ -96,13 +102,20 @@ def validate(spec):
     for servertype in ['app', 'web', 'offline']:
         if spec.find('.//' + servertype) is None:
             print("Warning: no {} server specified!".format(servertype), file=sys.stderr)
+    # TODO: warn if no issues
+    # TODO: warn for issues with no number, no files, or no summary
+    # TODO: warn if no build number, title
+
+
+def allfiles(spec):
+    return [a.text for a in spec.findall('.//issue/file')]
 
 
 def instructions_from_spec(spec):
     instructions = ET.Element('instructions')
     validate(spec)
     copy_trivial(spec, instructions)
-    research_files(spec, instructions)
+    research_files(allfiles(spec), serverdict(spec), instructions)
     handle_special(spec, instructions)
     sort_scripts(instructions)
     return instructions

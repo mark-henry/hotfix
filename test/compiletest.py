@@ -40,7 +40,7 @@ class CompileTest(unittest.TestCase):
     def test_js_handling(self):
         js_xml = '<hotfix><issue><file>asdf.js</file><file>asdf2.JS</file></issue></hotfix>'
         instructions = compile.instructions_from_spec(ElementTree.fromstring(js_xml))
-        self.assertEqual(2, len(instructions.findall('.//javascript')))
+        self.assertEqual(1, len(instructions.findall('.//javascript')))
 
 
     def test_sql_noduplication(self):
@@ -82,7 +82,7 @@ class CompileTest(unittest.TestCase):
 
     def test_server_dictionary(self):
         servers_xml = '<hotfix><app>10.1.0.181</app><web>10.1.0.182</web></hotfix>'
-        server_dict = compile.get_server_dict(ElementTree.fromstring(servers_xml))
+        server_dict = compile.serverdict(ElementTree.fromstring(servers_xml))
         self.assertIn('app', server_dict)
         self.assertIn('web', server_dict)
         self.assertNotIn('offline', server_dict)
