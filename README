@@ -1,6 +1,6 @@
 =Hotfix Helper=
 
-This sequence of utilities takes in a hotfix specifications document like this:
+This sequence of utilities takes in a hotfix specifications document of the form:
 
 	<hotfix>
 		<title>RPE 3.5.2 Hotfix 7</title>
@@ -18,7 +18,7 @@ This sequence of utilities takes in a hotfix specifications document like this:
 		</issue>
 	</hotfix>
 
-and "compiles" it to an instructions document like this:
+and "compiles" it to an instructions document of the form:
 
 	<instructions>
 		<build>RPE-3.5.2.25-HF7-148</build>
@@ -55,6 +55,16 @@ The initial spec XML can be easily made with the Hotfixhelper frontend web app.
 Following python packages required:
 pip install pystache
 pip install markdown
+
+
+==Development==
+To do:
+* Create utility that checks for presence of deployables
+* Sort replacements alphabetically within each 'app', 'web', 'offline' section
+* Enumerate .xlsx files by name instead of saying 'all .xlsx files'.
+* When typing issue number, 'enter' creates new issue and puts focus on issue number field.
+* Create field that quickly populates issue number based on Sai's initial request email. Paste in the email text and it shall create one issue per issue.
+* Create utility that refreshes files from the latest build.
 
 
 Author: mhenry

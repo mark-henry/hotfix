@@ -16,7 +16,7 @@ default_template = r'''
 * {{{.}}}
 {{/file}}
 {{^file}}
-This issue is already resolved and there are no deployables.
+No deployables.
 {{/file}}
 
 ###### Summary of issue {{number}} ######
