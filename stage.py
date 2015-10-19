@@ -13,7 +13,7 @@ import subprocess
 
 def find(buildfolder, filename):
     try:
-        search = subprocess.check_output(['dir', '/b', '/s', '{}\*{}'.format(buildfolder, filename)], shell=True)
+        search = subprocess.check_output(['where', '/r', buildfolder, filename], shell=True)
         if not search:
             return None
         return search.splitlines()[0].decode('utf-8')

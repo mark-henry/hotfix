@@ -1,15 +1,15 @@
 =Hotfix Helper=
 
-This sequence of utilities takes in a hotfix specifications document of the form:
+This suite of utilities takes in a hotfix specifications document of the form:
 
 	<hotfix>
 		<title>RPE 3.5.2 Hotfix 7</title>
 		<build>RPE-3.5.2.25-HF7-148</build>
 		<web>10.1.0.180</web>
 		<app>10.1.0.178</app>
-		<appspecial>Deploy CaseBusiness.jar as a deployment overlay in WildFly by running Deploy_RPE_352_HF7_38911.bat. Remove previous version first by running Deploy_RPE_352_HF6_38888.bat --remove.</appspecial>
+		<appspecial>Speical App Server instructions</appspecial>
 		<offline>10.1.0.179</offline>
-		<offlinespecial>Deploy CaseBusiness.jar as a deployment overlay in WildFly by running Deploy_RPE_352_HF7_38911.bat. Remove previous version first by running Deploy_RPE_352_HF6_38888.bat --remove.</offlinespecial>
+		<offlinespecial>Speical App Server instructions</offlinespecial>
 		<issue>
 			<number>38293</number>
 			<summary>Optimized Process Overpayment offline. Child issue 38954 tracks an index script for this issue.</summary>
