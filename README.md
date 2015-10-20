@@ -67,6 +67,7 @@ To do:
 * Enumerate .xlsx files by name instead of saying 'all .xlsx files'.
 * Frontend: When typing issue number, 'enter' creates new issue and puts focus on issue number field.
 * Frontend: Create field that quickly populates issue number based on Sai's initial request email. Paste in the email text and it shall create one issue per issue.
+* Investigate using something else instead of XML
 
 
 Author: mhenry

@@ -134,9 +134,12 @@ def render(instructions, template):
     rendered = markdown.markdown(templated)
     return r'''<html><head>
     <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap.min.css" rel="stylesheet">
-    <style>body {{ margin: 25px }}</style>
+    <style>
+    body {{ margin: 25px }}
+    #headerimg {{ position: absolute; z-index: -1; opacity: .07; height: 380px; }}
+    </style>
     <title>{0}</title>
-    <body>{1}</body>
+    <body><img id="headerimg" src="http://i.imgur.com/XzyWvyV.png"/>{1}</body>
     </html>'''.format(inst.get('title', 'Hotfix Instructions'), rendered)
 
 
