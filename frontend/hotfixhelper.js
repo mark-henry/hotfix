@@ -8,7 +8,7 @@
 
   App.Router.reopen({
     location: 'auto',
-    rootURL: '/hotfixhelper/'
+    rootURL: '/hotfix/'
   });
 
   App.IndexRoute = Ember.Route.extend({
@@ -29,59 +29,61 @@
     },
 
     serversByVersion: {},
-    map_to_xml: function() {
-      // Example spec
-      // <hotfix>
-      //   <title>RPE 1.2.3 Hotfix 999</title>
-      //   <build>RPE-3.5.2.25-HF5-121</build>
-      //   <buildfolder>\\mh-desktop\hotfixbuilds\RPE-3.5.2.25-HF5-121</buildfolder>
-      //   <app>10.1.0.181</app>
-      //   <web>10.1.0.182</web>
-      //   <offline>10.1.0.183</offline>
-      //   <issue>
-      //     <number>33321</number>
-      //     <file>getCustFinTransactionSrch.sql</file>
-      //     <file>CaseBusiness.jar</file>
-      //     <file>deploy_54321.bat</file>
-      //     <summary>Optimized somethign probably</summary>
-      //   </issue>
-      // </hotfix>
+    serialize: function() {
       var model = this.model;
-      var xml_doc = document.implementation.createDocument('', '', null);
-      var hotfix_tag = xml_doc.createElement('hotfix');
+      var spec = {};
 
-      var append_tag = function(parent, tag_name, text) {
-        if (!text) { return }
-        var tag = xml_doc.createElement(tag_name);
-        tag.appendChild(xml_doc.createTextNode(text));
-        parent.appendChild(tag);
-      };
-      
-      append_tag(hotfix_tag, 'title', model.title);
-      append_tag(hotfix_tag, 'build', model.build);
+      if (model.title) { spec.title = model.title }
+      if (model.build) { spec.build = model.build }
+      if (model.issues) {
+        spec.issues = model.issues.map(function(issue) {
+          var result = {};
+          if (issue.number) { result.number = issue.number }
+          if (issue.summary) { result.summary = issue.summary }
+          if (issue.files) { result.files = issue.files.split(/\s/) }
+          return result;
+        });
+      }
 
       var servers = this.serversByVersion[model.version] || {};
       ['web', 'app', 'offline'].forEach(function(server) {
-        append_tag(hotfix_tag, server, servers[server]);
-        append_tag(hotfix_tag, server + 'special', model[server + 'special']);
+        if (servers[server]) { spec[server] = servers[server] }
+        var special = server + 'special'
+        if (model[special]) { spec[special] = model[special]}
       });
 
-      model.issues.sort(function(a, b) { return a.number.localeCompare(b.number) })
-        .forEach(function(issue) {
-          var issue_tag = xml_doc.createElement('issue')
-          append_tag(issue_tag, 'number', issue.number);
-          append_tag(issue_tag, 'summary', issue.summary);
-          var files = issue.files || '';
-          files.split(/[ \n\t]/).forEach(function(file) {
-            append_tag(issue_tag, 'file', file);
-          });
-          hotfix_tag.appendChild(issue_tag);
+      return jsyaml.safeDump(spec);
+    },
+    deserialize: function(spec) {
+      var controller = this;
+
+      var spec = jsyaml.safeLoad(spec);
+
+      this.set('model.title', spec.title);
+      this.set('model.build', spec.build);
+
+      ['appspecial', 'webspecial', 'offlinespecial'].forEach(function(tag) {
+        controller.set('model.' + tag, spec[tag])
       });
 
-      xml_doc.appendChild(hotfix_tag);
+      var issues = Ember.A([]);
+      spec.issues.forEach(function(issue) {
+        issues.push({
+          number: issue.number,
+          files: issue.files.join('\n'),
+          summary: issue.summary
+        });
+      });
+      controller.set('model.issues', issues);
 
-      var xml_string = new XMLSerializer().serializeToString(xml_doc);
-      return xml_string;
+      // Set Version dropdown by attempting to match app-server IP addr in serversByVersion
+      //  to the app-server IP addr in the incoming XML
+      for (var version in this.serversByVersion) {
+        if (spec['app'] == this.serversByVersion[version]['app']) {
+          controller.set('model.version', version);
+          break;
+        }
+      }
     },
     load_from_xml: function(xml) {
       var controller = this;
@@ -111,10 +113,10 @@
       this.set('model.issues', issues_list);
     },
     download: function() {
-      var xml = this.map_to_xml();
+      var serialized = this.serialize();
       var element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(xml));
-      element.setAttribute('download', 'spec.xml');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(serialized));
+      element.setAttribute('download', 'spec.yaml');
       element.style.display = 'none';
       document.body.appendChild(element);
       element.click();
@@ -123,10 +125,8 @@
     onUploadComplete: function() {
       var controller = this;
       return function(e) {
-        var xml_string = e.target.result;
-        var xmlDoc = $.parseXML(xml_string);
-        var $xml = $(xmlDoc);
-        controller.load_from_xml($xml);
+        var upload_string = e.target.result;
+        controller.deserialize(upload_string);
       }
     },
     upload: function() {
