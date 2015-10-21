@@ -8,31 +8,24 @@ class RenderTest(unittest.TestCase):
         self.template = render.default_template
 
         self.instructions_fixture_1 = r'''
-            <instructions>
-                <title>test title</title>
-                <build>test build</build>
-            </instructions>
+            title: test title
+            build: test build
             '''
 
         self.instructions_fixture_2 = r'''
-            <instructions>
-                <issue>
-                    <number>123</number>
-                    <summary>already been fixed</summary>
-                </issue>
-            </instructions>
+            issues:
+             - number: 123
+               summary: already been fixed
             '''
 
-        self.instructions_fixture_3 = r'''
-            <instructions>
-                <issue>
-                    <number>1234</number>
-                    <file>CHWeb.dll</file>
-                    <file>ITPCoreBusiness.dll</file>
-                    <file>BR_mods_doc.xlsx</file>
-                    <summary>a few files</summary>
-                </issue>
-            </instructions>
+        self.instructions_fixture_3 = '''
+            issues:
+             - number: 1234
+               files:
+                 - CHWeb.dll
+                 - ITPCoreBusiness.dll
+                 - BR_mods.xlsx
+               summary: a few files
             '''
 
 
@@ -44,18 +37,24 @@ class RenderTest(unittest.TestCase):
 
 
     def test_sql(self):
-        html = render.render('''<instructions><database><script>asdf.sql</script></database></instructions>''',
-                             self.template)
+        html = render.render('''
+            database:
+              scripts:
+                - asdf.sql
+            ''', self.template)
         self.assertRegex(html, 'asdf.sql')
 
 
     def test_emptydeployables(self):
         html = render.render(self.instructions_fixture_2, self.template)
-        self.assertRegex(html, 'there are no deployables')
+        self.assertRegex(html, 'No deployables')
 
 
     def test_restartiis(self):
-        html = render.render('''<instructions><app><restartiis>true</restartiis></app></instructions>''', self.template)
+        html = render.render('''
+            app:
+                restartiis: true
+            ''', self.template)
         self.assertRegex(html, 'Restart IIS')
 
 
@@ -63,16 +62,25 @@ class RenderTest(unittest.TestCase):
         html = render.render(self.instructions_fixture_3, self.template)
         self.assertRegex(html, 'CHWeb.dll')
         self.assertRegex(html, 'ITPCoreBusiness.dll')
-        self.assertRegex(html, 'BR_mods_doc.xlsx')
+        self.assertRegex(html, 'BR_mods.xlsx')
 
 
-    def test_htmlescapes(self):
-        html = render.render(r'<instructions><issue><file>br_mods_doc</file></issue></instructions>',
-                             self.template)
+    def test_specialchars(self):
+        html = render.render('''
+            issues:
+             - issue:
+               files:
+                 - br_mods_doc
+               summary: less than <
+            ''', self.template)
         self.assertRegex(html, 'br_mods_doc')
+        self.assertRegex(html, 'less than &lt;')
 
 
     def test_special(self):
-        html = render.render(r'<instructions><app><special>special app</special></app></instructions>', self.template)
+        html = render.render('''
+            app:
+                special: special app
+            ''', self.template)
         self.assertRegex(html, 'special app')
 

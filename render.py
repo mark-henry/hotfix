@@ -1,27 +1,25 @@
 import pystache
 import markdown
 import argparse
-import xmltodict
-from collections import OrderedDict
-
+import yaml
 
 default_template = r'''
 # {{title}} #
 
 
-{{#issue}}
+{{#issues}}
 ### Issue {{number}} ###
 ###### Files included for issue {{number}} ######
-{{#file}}
+{{#files}}
 * {{{.}}}
-{{/file}}
-{{^file}}
+{{/files}}
+{{^files}}
 No deployables.
-{{/file}}
+{{/files}}
 
 ###### Summary of issue {{number}} ######
 {{{summary}}}
-{{/issue}}
+{{/issues}}
 
 *Warning: Back up all files before overwriting or deleting.*
 
@@ -30,14 +28,14 @@ No deployables.
 ## App Server ##
 {{special}}
 
-{{#replacement}}
+{{#replacements}}
 
 Replace {{filename}} in the following locations:
 
 {{#path}}
 1. {{{.}}}
 {{/path}}
-{{/replacement}}
+{{/replacements}}
 
 {{#restartiis}}
 Restart IIS.
@@ -49,14 +47,14 @@ Restart IIS.
 ## Web Server ##
 {{special}}
 
-{{#replacement}}
+{{#replacements}}
 
 Replace {{filename}} in the following locations:
 
 {{#path}}
 1. {{{.}}}
 {{/path}}
-{{/replacement}}
+{{/replacements}}
 
 {{#restartiis}}
 Restart IIS.
@@ -68,14 +66,14 @@ Restart IIS.
 ## Offline Server ##
 {{special}}
 
-{{#replacement}}
+{{#replacements}}
 
 Replace {{filename}} in the following locations:
 
 {{#path}}
 1. {{{.}}}
 {{/path}}
-{{/replacement}}
+{{/replacements}}
 
 {{#restartiis}}
 Restart IIS.
@@ -86,14 +84,14 @@ Restart IIS.
 {{#admin}}
 ## Admin Tool ##
 Replace these files on any machine running the Admin Tool:
-{{#replacement}}
+{{#replacements}}
 
 Replace {{filename}} in the following locations:
 
 {{#path}}
 1. {{{.}}}
 {{/path}}
-{{/replacement}}
+{{/replacements}}
 
 {{/admin}}
 
@@ -102,9 +100,9 @@ Replace {{filename}} in the following locations:
 ## Database ##
 Have a database administrator run the following scripts.
 
-{{#script}}
+{{#scripts}}
 1. {{{.}}}
-{{/script}}
+{{/scripts}}
 {{/database}}
 
 
@@ -129,7 +127,7 @@ Review all BR modifications spreadsheet documents and make the changes they desc
 
 
 def render(instructions, template):
-    inst = xmltodict.parse(instructions)['instructions']
+    inst = yaml.safe_load(instructions)
     templated = pystache.render(template, inst)
     rendered = markdown.markdown(templated)
     return r'''<html><head>
@@ -140,7 +138,7 @@ def render(instructions, template):
     </style>
     <title>{0}</title>
     <body><img id="headerimg" src="http://i.imgur.com/XzyWvyV.png"/>{1}</body>
-    </html>'''.format(inst.get('title', 'Hotfix Instructions'), rendered)
+    </html>'''.format('Hotfix Instructions', rendered)
 
 
 def main():
