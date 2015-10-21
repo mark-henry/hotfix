@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Hotfix Instructions Helper</title>
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <style type="text/css">
+    .spinner {
+      height: 30px;
+      width: 30px;
+      white-space: nowrap;
+      overflow: hidden;
+      -webkit-mask-image: url(img/spinner.png);
+      -webkit-mask-size: 30px;
+      background-color: #000;
+      -webkit-animation-name: spinnerRotate;
+      -webkit-animation-duration: 1.5s;
+      -webkit-animation-iteration-count: infinite;
+      -webkit-animation-timing-function: linear;
+    }
+    @-webkit-keyframes spinnerRotate {
+      from {
+        -webkit-transform:rotate(0deg);
+      }
+      to {
+        -webkit-transform:rotate(360deg);
+      }
+    }
+    
+    .issue-fileslist {
+      width: 300px;
+      height: 80px;
+    }
+    .issue-summary {
+      width: 400px;
+      height: 100px;
+    }
+  </style>
+</head>
+
+<body>
+<script src="http://builds.emberjs.com/tags/v1.11.3/ember-template-compiler.js"></script>
+<script src="http://builds.emberjs.com/tags/v1.11.3/ember.debug.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
+
+<script type="text/x-handlebars" data-template-name="index">
+  <form class="form-horizontal" style="position: absolute; top: 2px; left: 15px;">
+  <legend>Hotfix Instructions Helper</legend>
+
+  <div class="control-group">
+    <div class="controls">
+      <button {{action "download"}} class="btn btn-success">Save Spec</button>
+      <button {{action "upload"}} class="btn">Load existing spec file...</button>
+    </div>
+  </div>
+
+  <hr class="featurette-divider hidden-lg">
+
+  <div class="control-group">
+    <label class="control-label" for="title">Hotfix Name</label>
+    <div class="controls">
+      {{input value=model.title placeholder="RPE 3.5.2 Hotfix 5" class="input-xlarge"}}
+    </div>
+  </div>
+  
+  <hr class="featurette-divider hidden-lg">
+
+  <div class="control-group">
+    <label class="control-label" for="version">Product Version</label>
+    <div class="controls">
+      {{view "select" content=versions selection=model.version prompt="Select version..." class="input-xlarge"}}
+      <p class="help-block">The Product Version selection determines which set of servers will be searched for the deployable files. The mapping can be referenced <a href="/hotfixhelper/serversByVersion.json">here</a>.</p>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="build">Pulled from build</label>
+    <div class="controls">
+      {{input value=model.build placeholder="RPE_3.1.10.66.28" class="input-xlarge"}}
+    </div>
+  </div>
+  
+  <hr class="featurette-divider hidden-lg">
+
+  <div class="control-group">
+    <div class="controls">
+      <h3>Issues In This Hotfix</h3>
+
+      {{#each issue in model.issues}}
+        {{issue-item issue=issue delete-action="deleteIssue"}}
+      {{/each}}
+
+      <button {{action "addIssue"}} class="btn btn-success" type="submit">+ Add Issue</button>
+    </div>
+  </div>
+
+  <hr class="featurette-divider hidden-lg">
+
+  <div class="control-group">
+    <div class="controls">
+      {{textarea type="text" value=model.appspecial placeholder="App server special instructions"}}
+      {{textarea type="text" value=model.webspecial placeholder="Web server special instructions"}}
+      {{textarea type="text" value=model.offlinespecial placeholder="Offline server special instructions"}}
+    </div>
+  </div>
+
+  </form>
+
+</script>
+
+<script type="text/x-handlebars" data-template-name="components/issue-item">
+  <button {{action "delete"}} class="btn btn-danger" type="button">X</button>
+
+  <div class="control-group">
+    <label class="control-label">T+</label>
+    <div class="controls">
+      {{input type="text" value=issue.number placeholder="12345"}}
+      {{#if issue.number}}
+        <a target="peekticket" {{bind-attr href="trackplusurl"}}>T+ {{issue.number}}</a>
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Files in this issue</label>
+    <div class="controls">
+      {{textarea value=issue.files placeholder="Whitespace-delimited" class="issue-fileslist"}}
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Summary of Issue</label>
+    <div class="controls">
+      {{textarea value=issue.summary placeholder="Description of problem and solution" class="issue-summary"}}
+    </div>
+  </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="handlebars-markdown">
+  <div id="hotfixInstructions">
+  </div>
+</script>
+
+<script type="text/javascript" src="hotfixhelper.js">
+</script>
+
+</body>
+</html>

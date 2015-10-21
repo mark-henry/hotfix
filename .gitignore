@@ -33,18 +33,7 @@ __pycache__/
 *.ipr
 *.iws
 
-## Plugin-specific files:
+# IIS
+web.config
+*.log
 
-# IntelliJ
-/out/
-
-# mpeltonen/sbt-idea plugin
-.idea_modules/
-
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
