@@ -53,18 +53,6 @@ The initial spec XML can be easily made with the Hotfixhelper frontend web app.
 ## Installation ##
 
 Following python packages required:
-pip install pystache
-pip install markdown
-
-
-## Development ##
-Comments on shell script framework: Could modify so that .hotfix doesn't have to be copied every hotfix cycle. This means ironing out the scripts' reliance on what directory you're currently working in, which probably means manually changing a path in a shell script each hotfix cycle.
-
-To do:
-* Factor out reliance on /d/hotfix being the path to scripts
-* Add --only-missing option to stage.py
-* Sort replacements alphabetically within each 'app', 'web', 'offline' section
-* Enumerate .xlsx files by name instead of saying 'all .xlsx files'.
-* Frontend: When typing issue number, 'enter' creates new issue and puts focus on issue number field.
-* Frontend: Create field that quickly populates issue number based on Sai's initial request email. Paste in the email text and it shall create one issue per issue.
-* Investigate using something else instead of XML
+* pip install pystache
+* pip install markdown
+* pip install xmltodict
