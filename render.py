@@ -32,9 +32,9 @@ No deployables.
 
 Replace {{filename}} in the following locations:
 
-{{#path}}
+{{#paths}}
 1. {{{.}}}
-{{/path}}
+{{/paths}}
 {{/replacements}}
 
 {{#restartiis}}
@@ -51,9 +51,9 @@ Restart IIS.
 
 Replace {{filename}} in the following locations:
 
-{{#path}}
+{{#paths}}
 1. {{{.}}}
-{{/path}}
+{{/paths}}
 {{/replacements}}
 
 {{#restartiis}}
@@ -70,9 +70,9 @@ Restart IIS.
 
 Replace {{filename}} in the following locations:
 
-{{#path}}
+{{#paths}}
 1. {{{.}}}
-{{/path}}
+{{/paths}}
 {{/replacements}}
 
 {{#restartiis}}
@@ -88,9 +88,9 @@ Replace these files on any machine running the Admin Tool:
 
 Replace {{filename}} in the following locations:
 
-{{#path}}
+{{#paths}}
 1. {{{.}}}
-{{/path}}
+{{/paths}}
 {{/replacements}}
 
 {{/admin}}
@@ -134,7 +134,7 @@ def render(instructions, template):
     <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
     body {{ margin: 25px }}
-    #headerimg {{ position: absolute; z-index: -1; opacity: .07; height: 380px; }}
+    #headerimg {{ position: absolute; z-index: -1; opacity: .07; height: 380px; margin-left: 100px; }}
     </style>
     <title>{0}</title>
     <body><img id="headerimg" src="http://i.imgur.com/XzyWvyV.png"/>{1}</body>

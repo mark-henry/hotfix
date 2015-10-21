@@ -96,7 +96,7 @@ def validate(spec):
         if 'number' not in issue:
             warn('no number specified for issue')
         issue_num = issue.get('number', '<no number>')
-        if 'file' not in issue:
+        if 'files' not in issue:
             warn('no files specified for issue {}'.format(issue_num))
         if 'summary' not in issue:
             warn('no summary specified for issue {}'.format(issue_num))
@@ -124,9 +124,10 @@ def main():
     arg_parser.add_argument('specfile', help='hotfix specification file')
     args = arg_parser.parse_args()
 
-    specification = yaml.safe_load(args.specfile)
-    instructions = instructions_from_spec(specification)
-    print(yaml.dump(instructions))
+    with open(args.specfile) as yamlfile:
+        specification = yaml.safe_load(yamlfile.read())
+        instructions = instructions_from_spec(specification)
+        print(yaml.dump(instructions))
 
 
 if __name__ == "__main__":
