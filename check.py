@@ -3,26 +3,25 @@ Verifies the deployable files staged conform to the hofix spec.
 """
 import argparse
 import os
-from xml.etree import ElementTree as ET
+import yaml
 
 
 __author__ = 'mhenry'
 
 
 def get_expected_files(spec):
-    files = spec.findall('.//file')
-    if files is not None:
-        return [file.text.lower() for file in files]
-    else:
-        return []
+    files = []
+    for issue in spec.get('issues', []):
+        files.extend([f.lower() for f in issue.get('files', [])])
+    return files
 
 
 def get_staged_files():
     return [f.lower() for f in os.listdir('.') if os.path.isfile(f)]
 
 
-def check(spec_filename):
-    spec = ET.parse(spec_filename).getroot()
+def check(spec_str):
+    spec = yaml.safe_load(spec_str)
     spec_files = get_expected_files(spec)
     staged_files = get_staged_files()
     for expected in spec_files:
@@ -35,10 +34,11 @@ def check(spec_filename):
 
 def main():
     ap = argparse.ArgumentParser(description='Verifies that the files for this hotfix conform to spec.')
-    ap.add_argument('--spec', default='./.hotfix/spec.xml')
+    ap.add_argument('--spec', default='.hotfix/spec.yaml')
     args = ap.parse_args()
-    
-    check(args.spec)
+
+    with open(args.spec) as specfile:
+        check(specfile.read())
     
 
 if __name__ == '__main__':
